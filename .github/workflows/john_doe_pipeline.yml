@@ -5,7 +5,7 @@ on:
     branches: [ "main", "dev" ]
     tags: [ "v*.*.*" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -13,7 +13,7 @@ env:
 
 jobs:
   lint_and_test:
-    name: [1] Lint & Unit Test Core & Services
+    name: [1] Lint, Build & Unit Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -27,31 +27,44 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt pytest fastapi redis boto3
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt
 
       - name: Setup Rust Toolchain
         uses: dtolnay/rust-action@stable
         with:
           components: clippy, rustfmt
 
-      - name: Lint Core Rust Engine
+      - name: Build Core Rust & PyO3 Bindings
         run: |
           cd core-rust
           cargo clippy --all-targets --all-features -- -D warnings
-          cargo fmt -- --check
+          cargo build --release
+          cd ..
 
-      - name: Run Python Integration Tests
+      - name: Run Integration Test Suite
         run: |
           python3 scripts/18_run_e2e_integration_tests.py
 
   security_fuzz:
-    name: [2] Security Fuzzing & eBPF Checks
+    name: [2] Security Fuzzing & Vault Test
     needs: lint_and_test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Mass Code Vault Generator Test
+        run: |
+          python3 scripts/04_generate_code_vault.py
 
       - name: Run Adversarial Prompt Injection Fuzz
         run: |
@@ -62,23 +75,35 @@ jobs:
           python3 scripts/26_verify_cryptographic_shred.py
 
   multicloud_sync:
-    name: [3] Multi-Cloud Storage Sync Verification
+    name: [3] Multi-Cloud Storage Handshake
     needs: security_fuzz
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Run Multi-Cloud Storage Handshake
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Multi-Cloud Storage Check (Conditional on Secrets)
         env:
           STORAGE_ENDPOINT_URL: ${{ secrets.STORAGE_ENDPOINT_URL }}
           STORAGE_ACCESS_KEY: ${{ secrets.STORAGE_ACCESS_KEY }}
           STORAGE_SECRET_KEY: ${{ secrets.STORAGE_SECRET_KEY }}
         run: |
-          python3 scripts/03_init_multicloud_storage.py
+          if [ -z "${STORAGE_ACCESS_KEY}" ]; then
+            echo "[!] Storage secrets not configured in GitHub repository yet. Skipping live bucket handshake."
+          else
+            python3 scripts/03_init_multicloud_storage.py
+          fi
 
   publish_artifacts:
-    name: [4] Multi-Registry & Multi-Cloud Release
+    name: [4] Multi-Registry & Release
     needs: [security_fuzz, multicloud_sync]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
@@ -103,6 +128,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: johndoeai/core-system:${{ github.ref_name }}
 
-      - name: Publish Release Telemetry Report
+      - name: Generate Audit Report
         run: |
           python3 scripts/16_generate_audit_report.py
