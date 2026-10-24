@@ -1,0 +1,17 @@
+[package]
+name = "core-rust"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "core_rust"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
+sha2 = "0.10"
+rand = "0.8"
+
+[features]
+default = []
+python = ["dep:pyo3"]
