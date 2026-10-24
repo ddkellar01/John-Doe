@@ -1,0 +1,108 @@
+name: John-Doe AI System Master CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+    tags: [ "v*.*.*" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  lint_and_test:
+    name: [1] Lint & Unit Test Core & Services
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pytest fastapi redis boto3
+
+      - name: Setup Rust Toolchain
+        uses: dtolnay/rust-action@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Lint Core Rust Engine
+        run: |
+          cd core-rust
+          cargo clippy --all-targets --all-features -- -D warnings
+          cargo fmt -- --check
+
+      - name: Run Python Integration Tests
+        run: |
+          python3 scripts/18_run_e2e_integration_tests.py
+
+  security_fuzz:
+    name: [2] Security Fuzzing & eBPF Checks
+    needs: lint_and_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Adversarial Prompt Injection Fuzz
+        run: |
+          python3 scripts/48_simulate_adversarial_prompt_injection.py
+
+      - name: Verify Cryptographic Shredder Integrity
+        run: |
+          python3 scripts/26_verify_cryptographic_shred.py
+
+  multicloud_sync:
+    name: [3] Multi-Cloud Storage Sync Verification
+    needs: security_fuzz
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Multi-Cloud Storage Handshake
+        env:
+          STORAGE_ENDPOINT_URL: ${{ secrets.STORAGE_ENDPOINT_URL }}
+          STORAGE_ACCESS_KEY: ${{ secrets.STORAGE_ACCESS_KEY }}
+          STORAGE_SECRET_KEY: ${{ secrets.STORAGE_SECRET_KEY }}
+        run: |
+          python3 scripts/03_init_multicloud_storage.py
+
+  publish_artifacts:
+    name: [4] Multi-Registry & Multi-Cloud Release
+    needs: [security_fuzz, multicloud_sync]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Multi-Arch Containers
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: johndoeai/core-system:${{ github.ref_name }}
+
+      - name: Publish Release Telemetry Report
+        run: |
+          python3 scripts/16_generate_audit_report.py
