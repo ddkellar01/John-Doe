@@ -1,9 +1,5 @@
 # 🚀 John Doe AI Infrastructure & Autonomous Multi-Agent Framework
 
-<p center>
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnFlcjh4b2E1ZjByYnRtbDRicDVycXRseTZ4MXA0czJveXFlcjZ0eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L1R1tvI9svvIWAnVYn/giphy.gif" alt="AI Agent Orchestration" width="100%" height="250px" />
-</p>
-
 ![Build and Test Workflow](https://github.com/ddkeller01/john-doe-ai/actions/workflows/john_doe_pipeline.yml/badge.svg)
 ![Docker & Multi-Registry Publish](https://github.com/ddkeller01/john-doe-ai/actions/workflows/publish_artifacts.yml/badge.svg)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
