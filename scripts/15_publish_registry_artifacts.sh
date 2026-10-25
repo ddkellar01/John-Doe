@@ -8,12 +8,31 @@ echo "=================================================="
 VERSION=${1:-"1.0.0"}
 echo "[*] Target release version: ${VERSION}"
 
+# Define Dockerfile path (change this if your Dockerfile is in a subfolder, e.g., services/Dockerfile)
+DOCKERFILE_PATH="Dockerfile"
+
+if [ ! -f "$DOCKERFILE_PATH" ]; then
+    echo "[!] Error: No Dockerfile found at root ($DOCKERFILE_PATH)."
+    echo "[*] Looking for alternative Dockerfiles..."
+    if [ -f "services/Dockerfile" ]; then
+        DOCKERFILE_PATH="services/Dockerfile"
+    elif [ -f "core-rust/Dockerfile" ]; then
+        DOCKERFILE_PATH="core-rust/Dockerfile"
+    else
+        echo "[!] Critical Error: Could not locate any Dockerfile in the repository!"
+        exit 1
+    fi
+fi
+
+echo "[+] Using Dockerfile found at: $DOCKERFILE_PATH"
+
 # 1. Docker Hub Multi-Arch Container Publishing
 if [ -n "${dockerhub_username:-}" ]; then
     echo "[+] Building and pushing multi-arch container images to Docker Hub..."
     
     docker buildx build \
         --platform linux/amd64,linux/arm64 \
+        -f "$DOCKERFILE_PATH" \
         -t "${dockerhub_username}/core-system:${VERSION}" \
         -t "${dockerhub_username}/core-system:latest" \
         --push .
