@@ -5,10 +5,9 @@
 </p>
 
 ![Build and Test Workflow](https://github.com/ddkeller01/john-doe-ai/actions/workflows/john_doe_pipeline.yml/badge.svg)
-![Security & Fuzzing](https://github.com/ddkeller01/john-doe-ai/actions/workflows/security_fuzzing.yml/badge.svg)
 ![Docker & Multi-Registry Publish](https://github.com/ddkeller01/john-doe-ai/actions/workflows/publish_artifacts.yml/badge.svg)
-![Post-Quantum Compliance](https://github.com/ddkeller01/john-doe-ai/actions/workflows/post_quantum_compliance.yml/badge.svg)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
+
 
 ---
 
