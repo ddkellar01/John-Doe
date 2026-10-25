@@ -2,7 +2,7 @@
 
 ### 🌐 Interactive 3D AI Voxel Interface
 You can explore the live 3D rotating agent interface here:
-- [Launch Interactive UI & 3D Voxel Head](https://ddkellar01.github.io/John-Doe-Core/index.html) *(Enable GitHub Pages in your repo settings)*
+- [Launch Interactive UI & 3D Voxel Head][(https://ddkellar01.github.io/John-Doe-Core/index.html)](https://ddkellar01.github.io/John-Doe/) *(Enable GitHub Pages in your repo settings)*
   
 https://labs.google/fx/tools/flow/shared/video/5bc56386-4ca2-450e-b179-29677f86b286
 
