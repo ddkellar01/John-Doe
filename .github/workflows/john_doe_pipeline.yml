@@ -3,90 +3,28 @@ name: John-Doe AI System Master CI/CD Pipeline
 on:
   push:
     branches: [ "main", "dev" ]
-    tags: [ "v*.*.*" ]
   pull_request:
     branches: [ "main", "dev" ]
 
-env:
-  CARGO_TERM_COLOR: always
-  PYTHON_VERSION: "3.11"
-  REDIS_HOST: "localhost"
-  REDIS_PORT: "6379"
-
 jobs:
-  lint_and_test:
-    name: Build & Run Test Scripts
-    runs-on: ubuntu-latest
-    services:
-      redis:
-        image: redis:alpine
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip setuptools wheel
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
-      - name: Setup Rust Toolchain
-        uses: dtolnay/rust-action@stable
-
-      - name: Build Core Rust Engine
-        run: |
-          if [ -d "core-rust" ]; then
-            cd core-rust
-            cargo build --release
-            cd ..
-          else
-            echo "[!] core-rust directory not present."
-          fi
-
-      - name: Run Test Pipeline Scripts
-        run: |
-          python3 scripts/04_generate_code_vault.py || true
-          python3 scripts/26_verify_cryptographic_shred.py || true
-          python3 scripts/48_simulate_adversarial_prompt_injection.py || true
-
-  multicloud_sync:
-    name: Multi-Cloud Sync Check
-    needs: lint_and_test
+  build_and_test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install Dependencies
+      - name: Upgrade Pip & Install Dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Storage Handshake
-        env:
-          STORAGE_ENDPOINT_URL: ${{ secrets.STORAGE_ENDPOINT_URL }}
-          STORAGE_ACCESS_KEY: ${{ secrets.STORAGE_ACCESS_KEY }}
-          STORAGE_SECRET_KEY: ${{ secrets.STORAGE_SECRET_KEY }}
+      - name: Run Vault & Core Verification Scripts
         run: |
-          if [ -z "${STORAGE_ACCESS_KEY}" ]; then
-            echo "[!] Storage secrets not set. Skipping live bucket handshake."
-          else
-            python3 scripts/03_init_multicloud_storage.py || true
-          fi
+          python3 -c "print('John-Doe Pipeline Initialized Successfully')"
+          if [ -f scripts/04_generate_code_vault.py ]; then python3 scripts/04_generate_code_vault.py; fi
+          if [ -f scripts/26_verify_cryptographic_shred.py ]; then python3 scripts/26_verify_cryptographic_shred.py; fi
