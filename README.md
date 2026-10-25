@@ -4,9 +4,9 @@ https://labs.google/fx/tools/flow/shared/video/5bc56386-4ca2-450e-b179-29677f86b
 
 # 🚀 John Doe AI Infrastructure & Autonomous Multi-Agent Framework
 
-![Build and Test Workflow](https://github.com/ddkeller01/john-doe-ai/actions/workflows/john_doe_pipeline.yml/badge.svg)
-![Docker & Multi-Registry Publish](https://github.com/ddkeller01/john-doe-ai/actions/workflows/publish_artifacts.yml/badge.svg)
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
+[![Build and Test Workflow](https://github.com/ddkellar01/John-/actions/workflows/build.yml/badge.svg)](https://github.com/ddkellar01/John-/actions/workflows/build.yml)
+[![Docker & Multi-Registry Publish](https://github.com/ddkellar01/John-/actions/workflows/publish.yml/badge.svg)](https://github.com/ddkellar01/John-/actions/workflows/publish.yml)
+
 
 
 ---
