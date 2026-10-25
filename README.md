@@ -4,19 +4,19 @@
 ![Security & Fuzzing](https://github.com/ddkeller01/john-doe-ai/actions/workflows/security_fuzzing.yml/badge.svg)
 ![Docker & Multi-Registry Publish](https://github.com/ddkeller01/john-doe-ai/actions/workflows/publish_artifacts.yml/badge.svg)
 ![Post-Quantum Compliance](https://github.com/ddkeller01/john-doe-ai/actions/workflows/post_quantum_compliance.yml/badge.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 ---
 
 ## 🧰 Tech Stack Badges & Architecture
 
-### 💻 Core Programming Languages & Core Systems
+### 💻 Core Programming Languages & Systems
 ![Rust](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![C](https://img.shields.io/badge/C-A8B9CC?style=for-the-badge&logo=c&logoColor=white)
 ![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Bash / Shell](https://img.shields.io/badge/Shell_Script-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white)
+![Shell Script](https://img.shields.io/badge/Shell_Script-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white)
 ![PyO3](https://img.shields.io/badge/PyO3-Rust_Bindings-orange?style=for-the-badge)
 
 ### ⛓️ Web3 & Infrastructure
@@ -24,7 +24,7 @@
 ![Ethereum / EVM](https://img.shields.io/badge/Ethereum_EVM-3C3C3D?style=for-the-badge&logo=ethereum&logoColor=white)
 ![Monad Network](https://img.shields.io/badge/Monad-Parallel_EVM-8A2BE2?style=for-the-badge)
 ![Foundry](https://img.shields.io/badge/Foundry-Smart_Contract_Fuzzing-red?style=for-the-badge)
-![Ethers / Web3.py](https://img.shields.io/badge/Web3.py-JSON--RPC-blue?style=for-the-badge)
+![Web3.py](https://img.shields.io/badge/Web3.py-JSON--RPC-blue?style=for-the-badge)
 
 ### ⚙️ Platform Support & Hardware Architecture
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
@@ -53,6 +53,7 @@
 ![Google Cloud](https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)
 ![Backblaze B2](https://img.shields.io/badge/Backblaze_B2-S3_Storage-red?style=for-the-badge)
 
+---
 
 ## 📋 Overview
 
@@ -60,48 +61,53 @@ An enterprise-grade, full-stack autonomous AI agent orchestration platform, high
 
 ---
 
-## 📐 Architecture & Telemetry Data Flow
-
-👨‍💻 USER / CI/CD TRIGGER ]
-│
-▼
-[ 📜 master_orchestration_controller.sh ]
-│
-┌─────────────────────────────┼─────────────────────────────┐
-▼                             ▼                             ▼
-┌───────────────────────┐     ┌───────────────────────┐     ┌───────────────────────┐
-│ 🦀 core-rust Engine   │     │  🧠 Multi-Agent Loop  │     │ 🛡️ Sandbox & eBPF     │
-│ ├─ AST Parser         │     │  ├─ Agent Orchestrator│     │ ├─ Isolated Docker    │
-│ ├─ Post-Quantum Crypto│     │  ├─ SiftLM Reranker   │     │ ├─ eBPF Kernel Tracer │
-│ └─ Secure Shredder    │     │  └─ Memory Weights    │     │ └─ Injection Defense  │
-└───────────┬───────────┘     └───────────┬───────────┘     └───────────┬───────────┘
-│                             │                             │
-└─────────────────────────────┼─────────────────────────────┘
-│
-▼
-┌───────────────────────────┐
-│ ⚡ Monad EVM & Blockchain │
-│ ├─ RPC Node Connector     │
-│ └─ Foundry Fuzz Auditor   │
-└─────────────┬─────────────┘
-│
-▼
-┌───────────────────────────┐
-│ ☁️ Multi-Cloud & Storage  │
-│ ├─ AWS / GCP / Backblaze  │
-│ ├─ Redis Vector Memory    │
-│ └─ Cryptographic Purge    │
-└─────────────┬─────────────┘
-│
-▼
-[ 📊 50_system_telemetry_dump ]
-
-
----
-
-## 🏗️ Directory Layout & Master Script Catalog (1–50)
+## 📐 Architecture & System Telemetry Flow
 
 ```text
+                                 [ 👨‍💻 USER / CI/CD TRIGGER ]
+                                             │
+                                             ▼
+                        [ 📜 master_orchestration_controller.sh ]
+                                             │
+               ┌─────────────────────────────┼─────────────────────────────┐
+               ▼                             ▼                             ▼
+   ┌───────────────────────┐     ┌───────────────────────┐     ┌───────────────────────┐
+   │ 🦀 core-rust Engine   │     │  🧠 Multi-Agent Loop  │     │ 🛡️ Sandbox & eBPF     │
+   │ ├─ AST Parser         │     │  ├─ Agent Orchestrator│     │ ├─ Isolated Docker    │
+   │ ├─ Post-Quantum Crypto│     │  ├─ SiftLM Reranker   │     │ ├─ eBPF Kernel Tracer │
+   │ └─ Secure Shredder    │     │  └─ Memory Weights    │     │ └─ Injection Defense  │
+   └───────────┬───────────┘     └───────────┬───────────┘     └───────────┬───────────┘
+               │                             │                             │
+               └─────────────────────────────┼─────────────────────────────┘
+                                             │
+                                             ▼
+                               ┌───────────────────────────┐
+                               │ ⚡ Monad EVM & Blockchain │
+                               │ ├─ RPC Node Connector     │
+                               │ └─ Foundry Fuzz Auditor   │
+                               └─────────────┬─────────────┘
+                                             │
+                                             ▼
+                               ┌───────────────────────────┐
+                               │ ☁️ Multi-Cloud & Storage  │
+                               │ ├─ AWS / GCP / Backblaze  │
+                               │ ├─ Redis Vector Memory    │
+                               │ └─ Cryptographic Purge    │
+                               └─────────────┬─────────────┘
+                                             │
+                                             ▼
+                               [ 📊 50_system_telemetry_dump ]
+
+📊 Core Feature Matrix & Capabilities
+
+Subsystem ModulePrimary Tech StackKey FunctionalitySecurity / Compliance Standard
+Core Systems CoreRust, PyO3, SHA2AST parsing, post-quantum cryptography, PyO3 bindingsZero-retention secure shredding
+Multi-Agent EnginePython 3.11, RedisSelf-learning loops, task routing, vector memorySiftLM candidate pruning
+Malware SandboxDocker, eBPF, LinuxIsolated payload detonation, kernel tracingNetwork isolation (network=none)
+Blockchain SecuritySolidity, Foundry, EVMSmart contract fuzzing, gas profiling, Monad RPCInvariant checking & AST audit
+Multi-Cloud SyncAWS, GCP, Backblaze B2Zero-egress storage pooling, key rotationSOC2 / ISO27001 compliant
+
+🏗️ Repository Structure & Master
 .
 ├── .github/
 │   └── workflows/
