@@ -62,3 +62,36 @@ An enterprise-grade, full-stack autonomous AI agent orchestration platform, high
 
 ## 📐 Architecture & Telemetry Data Flow
 
+👨‍💻 USER / CI/CD TRIGGER ]
+│
+▼
+[ 📜 master_orchestration_controller.sh ]
+│
+┌─────────────────────────────┼─────────────────────────────┐
+▼                             ▼                             ▼
+┌───────────────────────┐     ┌───────────────────────┐     ┌───────────────────────┐
+│ 🦀 core-rust Engine   │     │  🧠 Multi-Agent Loop  │     │ 🛡️ Sandbox & eBPF     │
+│ ├─ AST Parser         │     │  ├─ Agent Orchestrator│     │ ├─ Isolated Docker    │
+│ ├─ Post-Quantum Crypto│     │  ├─ SiftLM Reranker   │     │ ├─ eBPF Kernel Tracer │
+│ └─ Secure Shredder    │     │  └─ Memory Weights    │     │ └─ Injection Defense  │
+└───────────┬───────────┘     └───────────┬───────────┘     └───────────┬───────────┘
+│                             │                             │
+└─────────────────────────────┼─────────────────────────────┘
+│
+▼
+┌───────────────────────────┐
+│ ⚡ Monad EVM & Blockchain │
+│ ├─ RPC Node Connector     │
+│ └─ Foundry Fuzz Auditor   │
+└─────────────┬─────────────┘
+│
+▼
+┌───────────────────────────┐
+│ ☁️ Multi-Cloud & Storage  │
+│ ├─ AWS / GCP / Backblaze  │
+│ ├─ Redis Vector Memory    │
+│ └─ Cryptographic Purge    │
+└─────────────┬─────────────┘
+│
+▼
+[ 📊 50_system_telemetry_dump ]
