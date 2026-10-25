@@ -1,5 +1,9 @@
 ![Screenshot](./Screenshot_20261024-183122_Gemini~2.jpg)
 
+### 🌐 Interactive 3D AI Voxel Interface
+You can explore the live 3D rotating agent interface here:
+- [Launch Interactive UI & 3D Voxel Head](https://ddkellar01.github.io/John-/index.html) *(Enable GitHub Pages in your repo settings)*
+  
 https://labs.google/fx/tools/flow/shared/video/5bc56386-4ca2-450e-b179-29677f86b286
 
 # 🚀 John Doe AI Infrastructure & Autonomous Multi-Agent Framework
