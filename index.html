@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Darion Kellar - AI Infrastructure & Autonomous Multi-Agent Framework</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #030712; color: #f3f4f6; overflow-x: hidden; }
+        .font-mono { font-family: 'Share Tech Mono', monospace; }
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.3));
+            background-size: 100% 4px;
+        }
+        .glow-cyan { filter: drop-shadow(0 0 12px rgba(6, 182, 212, 0.6)); }
+        .glow-emerald { filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.6)); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #374151; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col scanlines relative selection:bg-cyan-500 selection:text-black">
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-cyan-500/20 bg-black/40 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 bg-cyan-400 rounded-full animate-ping"></div>
+            <span class="font-mono text-cyan-400 tracking-wider text-sm md:text-base font-bold">DARION KELLAR // CORE_OS v4.8.2</span>
+        </div>
+        <div class="hidden md:flex items-center space-x-6 text-xs font-mono text-gray-400">
+            <div>NODE: <span class="text-emerald-400">ONLINE</span></div>
+            <div>LATENCY: <span class="text-cyan-400">14ms</span></div>
+            <div>SEC_LEVEL: <span class="text-purple-400">MAX-EBPF</span></div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 max-w-7xl mx-auto w-full">
+        
+        <!-- Left Panel: System Telemetry & Controls -->
+        <div class="lg:col-span-4 flex flex-col space-y-6">
+            <div class="bg-gray-900/60 border border-cyan-500/30 rounded-xl p-5 backdrop-blur-sm shadow-xl shadow-cyan-950/20">
+                <h2 class="font-mono text-cyan-400 text-sm tracking-wide mb-4 flex items-center justify-between">
+                    <span>[ AVATAR_CONTROLS_360 ]</span>
+                    <span class="text-xs text-gray-500">ACTIVE</span>
+                </h2>
+                <div class="space-y-4 text-sm">
+                    <div>
+                        <label class="block text-xs font-mono text-gray-400 mb-1">ROTATION SPEED</label>
+                        <input id="speedSlider" type="range" min="0" max="0.05" step="0.005" value="0.01" class="w-full accent-cyan-400 bg-gray-800 rounded-lg cursor-pointer">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="toggleSpin" class="bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 font-mono text-xs py-2 px-3 rounded-lg transition duration-200">
+                            TOGGLE SPIN
+                        </button>
+                        <button id="resetView" class="bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-300 font-mono text-xs py-2 px-3 rounded-lg transition duration-200">
+                            RESET VIEW
+                        </button>
+                    </div>
+                    <div class="pt-2 border-t border-gray-800 flex items-center justify-between text-xs font-mono text-gray-400">
+                        <span>HOLOGRAPHIC SCANLINES:</span>
+                        <button id="toggleScanline" class="px-2.5 py-1 bg-emerald-950 border border-emerald-500/40 text-emerald-400 rounded">ACTIVE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal Stream -->
+            <div class="bg-black/80 border border-gray-800 rounded-xl p-4 font-mono text-xs text-cyan-300/80 flex-1 min-h-[220px] flex flex-col">
+                <div class="text-gray-500 mb-2 pb-1 border-b border-gray-900 flex items-center justify-between">
+                    <span>// AGENT_LOG_STREAM</span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                </div>
+                <div id="terminalLog" class="space-y-1.5 overflow-y-auto flex-1 text-[11px] pr-1">
+                    <div>[06:42:01] System initialized successfully.</div>
+                    <div>[06:42:03] Loading procedural voxel topology...</div>
+                    <div>[06:42:05] eBPF network telemetry daemon active.</div>
+                    <div>[06:42:10] Monad RPC node handshake verified.</div>
+                    <div>[06:42:15] AI multi-agent orchestration loop online.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center / Right: 3D Canvas Showcase -->
+        <div class="lg:col-span-8 flex flex-col space-y-6">
+            <div class="relative bg-gradient-to-b from-gray-950 to-gray-900 border border-cyan-500/30 rounded-2xl overflow-hidden shadow-2xl flex-1 min-h-[480px] flex items-center justify-center">
+                <!-- Three.js Canvas Container -->
+                <div id="canvas-container" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></div>
+                
+                <!-- HUD Overlays -->
+                <div class="absolute top-4 left-4 font-mono text-[10px] text-cyan-400/70 pointer-events-none bg-black/40 px-3 py-1.5 rounded border border-cyan-500/20 backdrop-blur-sm">
+                    TARGET: DARION_KELLAR // 360_VOXEL_HEAD
+                </div>
+                <div class="absolute bottom-4 right-4 font-mono text-[10px] text-emerald-400/70 pointer-events-none bg-black/40 px-3 py-1.5 rounded border border-emerald-500/20 backdrop-blur-sm">
+                    RENDER: THREE.JS // WEBGL
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Script to render the 3D Voxel Head & interactions -->
+    <script>
+        const container = document.getElementById('canvas-container');
+        
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.set(0, 0, 7.5);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+
+        const pointLight1 = new THREE.PointLight(0x06b6d4, 3, 50);
+        pointLight1.position.set(5, 5, 5);
+        scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0x10b981, 2, 50);
+        pointLight2.position.set(-5, -5, -2);
+        scene.add(pointLight2);
+
+        // Voxel Head Group Construction
+        const headGroup = new THREE.Group();
+        scene.add(headGroup);
+
+        const voxelMaterial = new THREE.MeshStandardMaterial({
+            color: 0x94a3b8,
+            roughness: 0.3,
+            metalness: 0.8,
+            flatShading: true
+        });
+
+        const darkSuitMaterial = new THREE.MeshStandardMaterial({
+            color: 0x1e293b,
+            roughness: 0.5,
+            metalness: 0.5,
+            flatShading: true
+        });
+
+        const whiteShirtMaterial = new THREE.MeshStandardMaterial({
+            color: 0xf8fafc,
+            roughness: 0.2,
+            metalness: 0.1,
+            flatShading: true
+        });
+
+        const tieMaterial = new THREE.MeshStandardMaterial({
+            color: 0x0f172a,
+            roughness: 0.4,
+            metalness: 0.9,
+            flatShading: true
+        });
+
+        const boxGeo = new THREE.BoxGeometry(0.12, 0.12, 0.12);
+
+        function createVoxel(x, y, z, mat = voxelMaterial) {
+            const mesh = new THREE.Mesh(boxGeo, mat);
+            mesh.position.set(x, y, z);
+            headGroup.add(mesh);
+        }
+
+        // Build Face & Head Structure procedurally
+        for (let y = -1.2; y <= 1.2; y += 0.13) {
+            for (let x = -0.9; x <= 0.9; x += 0.13) {
+                for (let z = -0.9; z <= 0.9; z += 0.13) {
+                    const distSq = x*x + (y*1.2)*(y*1.2) + z*z;
+                    if (distSq < 0.9) {
+                        // Carve out eyes & jaw for aesthetic
+                        if (y > 0.1 && y < 0.3 && Math.abs(x) > 0.2 && Math.abs(x) < 0.5 && z > 0.4) continue; // Eyes
+                        createVoxel(x, y, z);
+                    }
+                }
+            }
+        }
+
+        // Build Dreadlocks / Hair cascading down
+        for (let angle = 0; angle < Math.PI * 2; angle += 0.35) {
+            for (let r = 0.75; r <= 1.0; r += 0.15) {
+                for (let y = 1.1; y >= -1.0; y -= 0.13) {
+                    const x = Math.cos(angle) * r;
+                    const z = Math.sin(angle) * r;
+                    if (z < 0.4 || Math.abs(x) > 0.4) {
+                        createVoxel(x, y, z, voxelMaterial);
+                    }
+                }
+            }
+        }
+
+        // Build Suit & Collar & Tie
+        for (let y = -1.3; y > -2.2; y -= 0.13) {
+            for (let x = -1.3; x <= 1.3; x += 0.13) {
+                for (let z = -1.0; z <= 1.0; z += 0.13) {
+                    const dist = Math.abs(x) + Math.abs(y + 1.5);
+                    if (dist < 1.8) {
+                        // White shirt collar center
+                        if (y > -1.5 && Math.abs(x) < 0.5 && z > -0.2) {
+                            if (Math.abs(x) < 0.15) {
+                                createVoxel(x, y, z, tieMaterial); // Tie
+                            } else {
+                                createVoxel(x, y, z, whiteShirtMaterial); // Shirt
+                            }
+                        } else {
+                            createVoxel(x, y, z, darkSuitMaterial); // Suit jacket
+                        }
+                    }
+                }
+            }
+        }
+
+        // Interactive Mouse/Touch Rotation
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let autoSpin = true;
+        let rotationSpeed = 0.01;
+
+        container.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+            autoSpin = false;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const deltaX = e.clientX - previousMousePosition.x;
+            const deltaY = e.clientY - previousMousePosition.y;
+
+            headGroup.rotation.y += deltaX * 0.008;
+            headGroup.rotation.x += deltaY * 0.008;
+
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mouseup', () => { isDragging = false; });
+
+        // Touch support for mobile
+        container.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                autoSpin = false;
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging || e.touches.length !== 1) return;
+            const deltaX = e.touches[0].clientX - previousMousePosition.x;
+            const deltaY = e.touches[0].clientY - previousMousePosition.y;
+
+            headGroup.rotation.y += deltaX * 0.008;
+            headGroup.rotation.x += deltaY * 0.008;
+
+            previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
+
+        window.addEventListener('touchend', () => { isDragging = false; });
+
+        // UI Controls Wiring
+        const speedSlider = document.getElementById('speedSlider');
+        speedSlider.addEventListener('input', (e) => {
+            rotationSpeed = parseFloat(e.target.value);
+            if (rotationSpeed > 0 && !autoSpin) autoSpin = true;
+        });
+
+        const toggleSpinBtn = document.getElementById('toggleSpin');
+        toggleSpinBtn.addEventListener('click', () => {
+            autoSpin = !autoSpin;
+            toggleSpinBtn.classList.toggle('bg-cyan-900', autoSpin);
+        });
+
+        const resetViewBtn = document.getElementById('resetView');
+        resetViewBtn.addEventListener('click', () => {
+            headGroup.rotation.set(0, 0, 0);
+            autoSpin = true;
+        });
+
+        const toggleScanlineBtn = document.getElementById('toggleScanline');
+        const bodyEl = document.body;
+        toggleScanlineBtn.addEventListener('click', () => {
+            bodyEl.classList.toggle('scanlines');
+            const isActive = bodyEl.classList.contains('scanlines');
+            toggleScanlineBtn.textContent = isActive ? 'ACTIVE' : 'OFF';
+            toggleScanlineBtn.className = isActive 
+                ? 'px-2.5 py-1 bg-emerald-950 border border-emerald-500/40 text-emerald-400 rounded text-xs'
+                : 'px-2.5 py-1 bg-gray-800 border border-gray-600 text-gray-400 rounded text-xs';
+        });
+
+        // Resize handling
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            if (autoSpin) {
+                headGroup.rotation.y += rotationSpeed;
+            }
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+  </html>
+  
